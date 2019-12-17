@@ -1,0 +1,14 @@
+<ag-grid-angular
+  style="height: 450px;"
+  class="ag-theme-balham"
+  [rowData]="rowData"
+  [columnDefs]="columnName"
+  [pagination]="hasPagination"
+  [animateRows]="hasRowAnimation"
+  [rowSelection]="hasMultipleRows"
+  [floatingFilter]="hasFloatingFilter"
+  [defaultColDef]="defaultColDef"
+  (selectionChanged)="onSelectionChanged()"
+  (gridReady)="onGridReady($event)"
+>
+</ag-grid-angular>

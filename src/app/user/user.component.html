@@ -1,0 +1,9 @@
+<app-grid
+  [columnName]="columnDefs"
+  [rowData]="rowData"
+  [hasPagination]="true"
+  [hasRowAnimation]="true"
+  [hasMultipleRows]="rowSelection"
+  (selectionChanged)="onSelectionChanged($event)"
+  >
+</app-grid>

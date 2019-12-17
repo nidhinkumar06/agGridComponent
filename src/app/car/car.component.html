@@ -1,0 +1,74 @@
+<div class="container-fluid">
+  <div class="row" *ngIf="this.rowData">
+    <div class="col-4">
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Global Search"
+          aria-label="Recipient's username"
+          aria-describedby="button-addon2"
+          [(ngModel)]="globalSearch"
+          (ngModelChange)="searchGlobalData()"
+        />
+      </div>
+    </div>
+    <div class="col-3">
+      <ng-multiselect-dropdown
+        [placeholder]="'Deselect a Column'"
+        [data]="dropDownList"
+        [(ngModel)]="selectedItems"
+        [settings]="dropdownSettings"
+        (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)"
+        (onDeSelect)="onItemUnSelect($event)"
+>
+</ng-multiselect-dropdown>
+
+    </div>
+    <div class="col-3 text-right">
+      {{ pagination.begin }}-{{ pagination.end }} of
+      {{ pagination.total }} &nbsp;
+      <button
+        class="btn"
+        (click)="previous()"
+        data-toggle="tooltip"
+        data-placement="left"
+        title="Previous Page"
+      >
+        <i class="fa fa-angle-left"></i> PREV
+      </button>
+      &nbsp;&nbsp;
+      <button
+        class="btn"
+        (click)="next()"
+        data-toggle="tooltip"
+        data-placement="left"
+        title="Next Page"
+      >
+        NEXT <i class="fa fa-angle-right"></i>
+      </button>
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="exportCSV()"
+        data-toggle="tooltip"
+        data-placement="left"
+        title="Export as CSV"
+      >
+        <i class="fa fa-download"></i> DOWNLOAD CSV
+      </button>
+    </div>
+  </div>
+  <br />
+  <app-grid
+    [columnName]="columnDefs"
+    [hasFloatingFilter]="true"
+    [defaultColDef]="defaultColDefs"
+    (gridReady)="OnGridReady($event)"
+    [rowData]="rowData"
+  >
+  </app-grid>
+</div>
