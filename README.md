@@ -14,14 +14,67 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-## Running unit tests
+## Resize columns based on screen size
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Resize the columns based on the screen size - It should be given on onGridReady
 
-## Running end-to-end tests
+```
+  const eGridDiv = document.querySelector('.my-grid');
+  const allColumnIds = [];
+  const columnNames = ['0', 'action', 'collectionName'];
+    // auto sizing columns
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+     if (eGridDiv.clientWidth <= 768) {
+       this.columnApi.getAllColumns().forEach(function (column) {
+         if (columnNames.includes(column.colId)) {
+           allColumnIds.push(column.colId);
+         }
+       });
+       this.columnApi.autoSizeColumns(allColumnIds);
+     } else {
+       params.api.sizeColumnsToFit();
+     }
+```
 
-## Further help
+## Show Columns Based on Screen Size
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Show the columns based on screen size that is if the screen size is for mobile then show only 2 columns else show all columns - It should be given on onGridReady
+
+```
+if (eGridDiv.clientWidth <= 768) {
+      this.columnDefs = [
+        { headerName: 'ID', width: 100, valueGetter: (args) => this.getIdValue(args) },
+        {
+          headerName: 'Action',
+          field: 'action',
+          debounceMs: 2000,
+          suppressMenu: true,
+          floatingFilterComponentParams: { suppressFilterButton: true }
+        },
+        { headerName: 'Collection', field: 'collectionName'}
+      ];
+      this.defaultColDefs = {
+        filter: true
+      };
+    } else {
+      this.columnDefs = [
+        { headerName: 'ID', width: 100, valueGetter: (args) => this.getIdValue(args) },
+        {
+          headerName: 'Action',
+          field: 'action',
+          debounceMs: 2000,
+          suppressMenu: true,
+          floatingFilterComponentParams: { suppressFilterButton: true }
+        },
+        { headerName: 'Collection', field: 'collectionName'},
+        { headerName: 'Date', field: 'date'},
+        { headerName: 'End Point', field: 'endpoint'},
+        { headerName: 'IP', field: 'ipAddress' },
+        { headerName: 'Method', field: 'method' },
+        { headerName: 'Status Code', field: 'statusCode' },
+      ];
+      this.defaultColDefs = {
+        filter: true
+      };
+    }
+```

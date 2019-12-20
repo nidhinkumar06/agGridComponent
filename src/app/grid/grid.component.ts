@@ -7,6 +7,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class GridComponent implements OnInit {
   gridApi;
+  gridColumnApi;
 
   constructor() { }
 
@@ -21,8 +22,6 @@ export class GridComponent implements OnInit {
   @Output() gridReady = new EventEmitter();
 
   onGridReady(params): void {
-    console.log('params', params);
-
     this.gridApi = params.api;
     this.gridReady.emit(params);
   }
@@ -31,7 +30,6 @@ export class GridComponent implements OnInit {
     this.selectionChanged.emit(this.gridApi);
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
 }

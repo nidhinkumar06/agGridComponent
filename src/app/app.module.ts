@@ -14,6 +14,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { FormsModule } from '@angular/forms';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { VehiclesComponent } from './vehicles/vehicles.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     AppComponent,
     GridComponent,
     UserComponent,
-    CarComponent
+    CarComponent,
+    VehiclesComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,6 @@
 <div class="container-fluid">
-  <div class="row" *ngIf="this.rowData">
-    <div class="col-4">
+  <div class="row">
+    <div class="col-lg-9 col-sm-12">
       <div class="input-group mb-3">
         <input
           type="text"
@@ -13,7 +13,59 @@
         />
       </div>
     </div>
-    <div class="col-3">
+    <div class="col-lg-3 col-sm-12 text-right">
+        <div class="row">
+          <div class="col-2" *ngIf="showEdit">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-toggle="tooltip"
+              data-placement="left"
+              title="Edit"
+            >
+              <i class="fa fa-pencil"></i>
+            </button>
+          </div>
+          <div class="col-2" *ngIf="showDelete">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-toggle="tooltip"
+              data-placement="left"
+              title="Delete"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+          <div class="col-2">
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="toggleFloatingFilter()"
+              data-toggle="tooltip"
+              data-placement="left"
+              title="Column Filter"
+            >
+              <i class="fa fa-filter"></i>
+            </button>
+          </div>
+          <div class="col-2">
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="exportCSV()"
+              data-toggle="tooltip"
+              data-placement="left"
+              title="Export as CSV"
+            >
+              <i class="fa fa-download"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="row" *ngIf="this.rowData">
+    <div class="col-lg-4 col-sm-12">
       <ng-multiselect-dropdown
         [placeholder]="'Deselect a Column'"
         [data]="dropDownList"
@@ -22,12 +74,11 @@
         (onSelect)="onItemSelect($event)"
         (onSelectAll)="onSelectAll($event)"
         (onDeSelect)="onItemUnSelect($event)"
->
-</ng-multiselect-dropdown>
-
+      >
+      </ng-multiselect-dropdown>
     </div>
-    <div class="col-3 text-right">
-      {{ pagination.begin }}-{{ pagination.end }} of
+    <div class="col-lg-8 col-sm-12 text-right">
+      <!-- {{ pagination.begin }}-{{ pagination.end }} of
       {{ pagination.total }} &nbsp;
       <button
         class="btn"
@@ -47,27 +98,43 @@
         title="Next Page"
       >
         NEXT <i class="fa fa-angle-right"></i>
-      </button>
-    </div>
-    <div class="col-2 text-right">
-      <button
-        type="button"
-        class="btn btn-primary"
-        (click)="exportCSV()"
-        data-toggle="tooltip"
-        data-placement="left"
-        title="Export as CSV"
-      >
-        <i class="fa fa-download"></i> DOWNLOAD CSV
-      </button>
+      </button> -->
+      <div>
+        <div>
+          <nav aria-label="Page navigation example">
+            <ul
+              *ngIf="pager.pages && pager.pages.length"
+              class="pagination justify-content-end"
+            >
+              <li class="page-item" [ngClass]="{ disabled: pager.currentPage === 1 }">
+                <a class="page-link" (click)="setPage(1)">First</a>
+              </li>
+              <li class="page-item" [ngClass]="{ disabled: pager.currentPage === 1 }">
+                 <a class="page-link" (click)="setPage(pager.currentPage -1)">Previous</a>
+              </li>
+              <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{ active: pager.currentPage === page }">
+                <a class="page-link" (click)="setPage(page)">{{ page }}</a>
+              </li>
+              <li class="page-item" [ngClass]="{ disabled: pager.currentPage === pager.totalPages }">
+                <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+              </li>
+              <li class="page-item" [ngClass]="{ disabled: pager.currentPage === pager.totalPages }">
+                  <a class="page-link" (click)="setPage(pager.totalPages)">Last</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
     </div>
   </div>
   <br />
   <app-grid
     [columnName]="columnDefs"
-    [hasFloatingFilter]="true"
+    [hasFloatingFilter]="this.floatingFilter"
     [defaultColDef]="defaultColDefs"
+    [hasMultipleRows]="rowSelection"
     (gridReady)="OnGridReady($event)"
+    (selectionChanged)="onSelectionChanged($event)"
     [rowData]="rowData"
   >
   </app-grid>

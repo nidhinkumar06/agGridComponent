@@ -1,6 +1,6 @@
 <ag-grid-angular
-  style="height: 450px;"
-  class="ag-theme-balham"
+  style="height: 400px;"
+  class="ag-theme-balham my-grid"
   [rowData]="rowData"
   [columnDefs]="columnName"
   [pagination]="hasPagination"
@@ -8,6 +8,7 @@
   [rowSelection]="hasMultipleRows"
   [floatingFilter]="hasFloatingFilter"
   [defaultColDef]="defaultColDef"
+  [enableColResize]="true"
   (selectionChanged)="onSelectionChanged()"
   (gridReady)="onGridReady($event)"
 >

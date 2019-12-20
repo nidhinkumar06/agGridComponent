@@ -21,14 +21,20 @@ export class AuditService {
 
   getAllAuditLogs() {
     console.log('this.pages is', this.page);
-    if (this.action) {
-      return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}&action=${this.action}`);
-    } else {
-      return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}`);
-    }
+    console.log('this.action', this.action);
+    return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}`);
+    // if (this.action) {
+    //   return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}&action=${this.action}`);
+    // } else {
+    //   return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}`);
+    // }
   }
 
   getSearchedData(searchKey: string) {
     return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}&%24term=${searchKey}`);
+  }
+
+  getColumnSearch(searchKey: string) {
+    return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}&action=${searchKey}`);
   }
 }
