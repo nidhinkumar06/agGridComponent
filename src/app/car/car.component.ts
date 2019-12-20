@@ -78,21 +78,6 @@ export class CarComponent implements OnInit {
       {
         headerName: 'Action',
         field: 'action',
-        // filterParams: {
-        //   filterOptions: ['contains'],
-        //   textCustomComparator: (filter, value, filterText) => {
-        //     const filteredText = filterText.charAt(0).toUpperCase() + filterText.slice(1);
-        //     if (filteredText) {
-        //       // store.dispatch(new ListStoreActions.ActionFilter(filteredText));
-        //       // store.dispatch(new ListStoreActions.SetCurrentPage());
-        //       // this.loadData();
-        //       this.searchData(filteredText);
-        //     } else {
-        //       console.log('else block got called');
-        //       store.dispatch(new ListStoreActions.RemoveActionFilter());
-        //     }
-        //   },
-        // },
         debounceMs: 2000,
         suppressMenu: true,
         floatingFilterComponentParams: { suppressFilterButton: true }
@@ -179,20 +164,6 @@ export class CarComponent implements OnInit {
     this.pager = this.pagerService.getPager(this.pagination.total, page, this.pagination.limit);
     this.loadData();
   }
-
-  // previous(): void {
-  //   if (this.paginationPages.hasPrev) {
-  //     this.store.dispatch(new ListStoreActions.NextPage(this.page - 1));
-  //     this.loadData();
-  //   }
-  // }
-
-  // next(): void {
-  //   if (this.paginationPages.hasNext) {
-  //     this.store.dispatch(new ListStoreActions.NextPage(this.page + 1));
-  //     this.loadData();
-  //   }
-  // }
 
   onItemSelect(item: any) {
     this.columnApi.setColumnVisible(item.value, true);
