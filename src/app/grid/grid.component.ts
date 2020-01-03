@@ -9,7 +9,7 @@ export class GridComponent implements OnInit {
   gridApi;
   gridColumnApi;
 
-  constructor() { }
+  constructor() {}
 
   @Input() columnName: any[];
   @Input() rowData: any[];
@@ -18,7 +18,10 @@ export class GridComponent implements OnInit {
   @Input() hasRowAnimation: boolean;
   @Input() hasMultipleRows: string;
   @Input() hasFloatingFilter: boolean;
+  @Input() hasServerSideFilter: boolean;
+  @Input() rowModelType: string;
   @Output() selectionChanged = new EventEmitter();
+  @Output() columnResized = new EventEmitter();
   @Output() gridReady = new EventEmitter();
 
   onGridReady(params): void {
@@ -28,6 +31,10 @@ export class GridComponent implements OnInit {
 
   onSelectionChanged() {
     this.selectionChanged.emit(this.gridApi);
+  }
+
+  onColumnResized() {
+    this.columnResized.emit(this.gridApi);
   }
 
   ngOnInit() { }

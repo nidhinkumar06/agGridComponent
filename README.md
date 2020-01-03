@@ -78,3 +78,12 @@ if (eGridDiv.clientWidth <= 768) {
       };
     }
 ```
+## To get the Column State
+  To get the column state use the below code
+
+  ```
+  params.columnApi.getColumnState()
+  ```
+
+
+  

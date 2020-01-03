@@ -1,11 +1,13 @@
 import { AuditService } from '../../services/AuditService';
 import { Component, OnInit } from '@angular/core';
 
-import { first } from 'rxjs/operators';
+import { first, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
 import * as ListStoreActions from '../redux/actions/auditListActions';
+import * as GridStoreActions from '../redux/actions/gridWidthActions';
 import { PagerService } from '../../services/PagerService';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-car',
@@ -24,6 +26,7 @@ export class CarComponent implements OnInit {
   globalSearch;
   selectedRows;
   rowSelection;
+  rowModelType;
   dropdownSettings = {};
   showEdit = false;
   showDelete = false;
@@ -55,14 +58,27 @@ export class CarComponent implements OnInit {
     total: 0
   };
 
-  constructor(private auditService: AuditService, private pagerService: PagerService, private store: Store<any>) {
+  columns;
+  params;
+
+
+  constructor(
+    private auditService: AuditService,
+    private pagerService: PagerService,
+    private store: Store<any>,
+    private http: HttpClient) {
+    console.log('car component got called');
     store.pipe(select('auditList')).subscribe(val => {
       this.page = val.page;
+    });
+    store.pipe(select('gridList')).subscribe(val => {
+      this.columns = val.columns;
     });
     this.defaultColDefs = {
       filter: true,
     };
     this.rowSelection = 'multiple';
+    this.rowModelType = 'infinite';
     this.columnDefs = [
       {
         headerName: 'ID',
@@ -74,42 +90,121 @@ export class CarComponent implements OnInit {
         headerCheckboxSelection: (params) => {
           return params.columnApi.getRowGroupColumns().length === 0;
         },
+        suppressSizeToFit: true,
       },
       {
         headerName: 'Action',
         field: 'action',
-        // filterParams: {
-        //   filterOptions: ['contains'],
-        //   textCustomComparator: (filter, value, filterText) => {
-        //     const filteredText = filterText.charAt(0).toUpperCase() + filterText.slice(1);
-        //     if (filteredText) {
-        //       // store.dispatch(new ListStoreActions.ActionFilter(filteredText));
-        //       // store.dispatch(new ListStoreActions.SetCurrentPage());
-        //       // this.loadData();
-        //       this.searchData(filteredText);
-        //     } else {
-        //       console.log('else block got called');
-        //       store.dispatch(new ListStoreActions.RemoveActionFilter());
-        //     }
-        //   },
-        // },
-        debounceMs: 2000,
+        filterParams: {
+          filterOptions: ['contains'],
+          suppressAndOrCondition: true,
+        },
         suppressMenu: true,
         floatingFilterComponentParams: { suppressFilterButton: true }
       },
-      { headerName: 'Collection', field: 'collectionName' },
+      {
+        headerName: 'Collection',
+        field: 'collectionName',
+        suppressMenu: true,
+        floatingFilterComponentParams: { suppressFilterButton: true }
+      },
       { headerName: 'Date', field: 'date' },
       { headerName: 'End Point', field: 'endpoint' },
       { headerName: 'IP', field: 'ipAddress' },
       { headerName: 'Method', field: 'method' },
       { headerName: 'Status Code', field: 'statusCode' },
     ];
+    this.columnDefs = this.columnDefs.map((item, i) => Object.assign({}, item, this.columns[i]));
   }
 
   OnGridReady(params) {
+    this.params = params;
     this.gridApi = params.api;
     this.columnApi = params.columnApi;
-    this.loadData();
+    // this.loadData(); //without column filter
+    this.loadFilteredData(this.params);
+  }
+
+  loadFilteredData(params) {
+    this.auditService.getAllAuditLogs().pipe(first()).subscribe((audits: any) => {
+      this.rowData = audits.docs;
+      this.pagination = audits.items;
+      this.paginationPages = audits.pages;
+      const dataSource = {
+        rowCount: null,
+        getRows: (params) => {
+          console.log('params is', params);
+
+          setTimeout(() => {
+            let dataAfterSortingAndFiltering;
+            this.sortAndFilter(audits.docs, params.sortModel, params.filterModel).then((datas: any) => {
+              dataAfterSortingAndFiltering = datas;
+              this.rowData = datas;
+              const rowsThisPage = dataAfterSortingAndFiltering.slice(0, audits.items.end);
+              let lastRow = -1;
+              if (dataAfterSortingAndFiltering.length <= params.endRow) {
+                lastRow = dataAfterSortingAndFiltering.length;
+              }
+              params.successCallback(rowsThisPage, lastRow);
+            });
+          }, 3000);
+        }
+      };
+      params.api.setDatasource(dataSource);
+    });
+  }
+
+  sortAndFilter(allOfTheData, sortModel, filterModel) {
+    return this.sortData(sortModel, this.filterData(filterModel, allOfTheData));
+  }
+
+  sortData(sortModel, data) {
+    const sortPresent = sortModel && sortModel.length > 0;
+    if (!sortPresent) {
+      return data;
+    }
+    const resultOfSort = data.slice();
+    resultOfSort.sort((a, b) => {
+      for (let k = 0; k < sortModel.length; k++) {
+        const sortColModel = sortModel[k];
+        const valueA = a[sortColModel.colId];
+        const valueB = b[sortColModel.colId];
+        if (valueA == valueB) {
+          continue;
+        }
+        const sortDirection = sortColModel.sort === 'asc' ? 1 : -1;
+        if (valueA > valueB) {
+          return sortDirection;
+        } else {
+          return sortDirection * -1;
+        }
+      }
+      return 0;
+    });
+    return resultOfSort;
+  }
+
+  async filterData(filterModel, data) {
+    const filterKeys = Object.keys(filterModel);
+    const filterPresent = filterModel && Object.keys(filterModel).length > 0;
+    if (!filterPresent) {
+      return data;
+    }
+    const resultOfFilter = [];
+    const filterParams = [];
+    for (let i = 0; i < filterKeys.length; i++) {
+      filterParams.push(`${filterKeys[i]}=${filterModel[filterKeys[i]].filter}`);
+    }
+    const params = filterParams.join('&');
+
+    await this.auditService.getColumnSearch(params).pipe(first()).toPromise()
+    .then((datas: any) => {
+      console.log('data is', datas);
+      this.pagination = datas.items;
+      this.paginationPages = datas.pages;
+      resultOfFilter.push(...datas.docs);
+    });
+    return resultOfFilter;
   }
 
   toggleFloatingFilter() {
@@ -131,6 +226,31 @@ export class CarComponent implements OnInit {
       this.showEdit = false;
       this.showDelete = true;
     }
+  }
+
+  drop(params) {
+    const alteredColumns = [];
+    params.map((param: any) => {
+      alteredColumns.push(param.id);
+    });
+    this.columnApi.moveColumns(alteredColumns, 1);
+  }
+
+  onColumnResized() {
+    const allColumnIds = [];
+    this.columnApi.getColumnState().forEach((column) => {
+      allColumnIds.push({field: column.colId, width: column.width});
+    });
+    this.store.dispatch(new GridStoreActions.UpdateColWidth(allColumnIds));
+  }
+
+  autoSizeAll() {
+    const allColumnIds = [];
+    this.columnApi.getColumnState().forEach((column) => {
+      allColumnIds.push(column.colId);
+    });
+    this.columnApi.autoSizeColumns(allColumnIds, false);
+    this.store.dispatch(new GridStoreActions.ResetColWidth());
   }
 
   searchGlobalData() {
@@ -177,22 +297,25 @@ export class CarComponent implements OnInit {
   setPage(page: number): void {
     this.store.dispatch(new ListStoreActions.NextPage(page));
     this.pager = this.pagerService.getPager(this.pagination.total, page, this.pagination.limit);
-    this.loadData();
+    // this.loadData();
+    this.loadFilteredData(this.params);
   }
 
-  // previous(): void {
-  //   if (this.paginationPages.hasPrev) {
-  //     this.store.dispatch(new ListStoreActions.NextPage(this.page - 1));
-  //     this.loadData();
-  //   }
-  // }
+  previous(): void {
+    if (this.paginationPages.hasPrev) {
+      this.store.dispatch(new ListStoreActions.NextPage(this.page - 1));
+      this.loadFilteredData(this.params);
+      // this.loadData();
+    }
+  }
 
-  // next(): void {
-  //   if (this.paginationPages.hasNext) {
-  //     this.store.dispatch(new ListStoreActions.NextPage(this.page + 1));
-  //     this.loadData();
-  //   }
-  // }
+  next(): void {
+    if (this.paginationPages.hasNext) {
+      this.store.dispatch(new ListStoreActions.NextPage(this.page + 1));
+      this.loadFilteredData(this.params);
+      // this.loadData();
+    }
+  }
 
   onItemSelect(item: any) {
     this.columnApi.setColumnVisible(item.value, true);

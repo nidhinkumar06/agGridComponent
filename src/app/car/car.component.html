@@ -61,12 +61,24 @@
               <i class="fa fa-download"></i>
             </button>
           </div>
+          <div class="col-2">
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="autoSizeAll()"
+              data-toggle="tooltip"
+              data-placement="left"
+              title="Resize All Columns"
+            >
+              <i class="fa fa-arrows-h"></i>
+            </button>
+          </div>
         </div>
       </div>
   </div>
   <div class="row" *ngIf="this.rowData">
     <div class="col-lg-4 col-sm-12">
-      <ng-multiselect-dropdown
+      <!-- <ng-multiselect-dropdown
         [placeholder]="'Deselect a Column'"
         [data]="dropDownList"
         [(ngModel)]="selectedItems"
@@ -75,31 +87,42 @@
         (onSelectAll)="onSelectAll($event)"
         (onDeSelect)="onItemUnSelect($event)"
       >
-      </ng-multiselect-dropdown>
+      </ng-multiselect-dropdown> -->
+      <multiselect-dropdown
+        [placeholder]="'Deselect a Column'"
+        [data]="dropDownList"
+        [(ngModel)]="selectedItems"
+        [settings]="dropdownSettings"
+        (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)"
+        (onDeSelect)="onItemUnSelect($event)"
+        (cdkDropListDropped)="drop($event)"
+      >
+      </multiselect-dropdown>
     </div>
     <div class="col-lg-8 col-sm-12 text-right">
-      <!-- {{ pagination.begin }}-{{ pagination.end }} of
-      {{ pagination.total }} &nbsp;
-      <button
-        class="btn"
-        (click)="previous()"
-        data-toggle="tooltip"
-        data-placement="left"
-        title="Previous Page"
-      >
-        <i class="fa fa-angle-left"></i> PREV
-      </button>
-      &nbsp;&nbsp;
-      <button
-        class="btn"
-        (click)="next()"
-        data-toggle="tooltip"
-        data-placement="left"
-        title="Next Page"
-      >
-        NEXT <i class="fa fa-angle-right"></i>
-      </button> -->
-      <div>
+        PAGE: <input type="number" style="width: 50px" [(ngModel)]="paginationPages.current" /> / {{paginationPages.total}}
+        <button
+          class="btn"
+          (click)="previous()"
+          data-toggle="tooltip"
+          data-placement="left"
+          title="Previous Page"
+        >
+          <i class="fa fa-angle-left"></i>
+        </button>
+        {{ pagination.begin }}-{{ pagination.end }} of
+        {{ pagination.total }}
+        <button
+          class="btn"
+          (click)="next()"
+          data-toggle="tooltip"
+          data-placement="left"
+          title="Next Page"
+        >
+          <i class="fa fa-angle-right"></i>
+        </button>
+      <!-- <div>
         <div>
           <nav aria-label="Page navigation example">
             <ul
@@ -124,17 +147,20 @@
             </ul>
           </nav>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
   <br />
   <app-grid
     [columnName]="columnDefs"
     [hasFloatingFilter]="this.floatingFilter"
+    [hasRowAnimation]="true"
     [defaultColDef]="defaultColDefs"
     [hasMultipleRows]="rowSelection"
+    [rowModelType]="this.rowModelType"
     (gridReady)="OnGridReady($event)"
     (selectionChanged)="onSelectionChanged($event)"
+    (columnResized)="onColumnResized($event)"
     [rowData]="rowData"
   >
   </app-grid>

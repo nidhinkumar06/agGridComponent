@@ -1,0 +1,105 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-9 col-sm-12">
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Global Search"
+          aria-label="Recipient's username"
+          aria-describedby="button-addon2"
+        />
+      </div>
+    </div>
+    <div class="col-lg-3 col-sm-12 text-right">
+      <div class="row">
+        <div class="col-2">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="Edit"
+          >
+            <i class="fa fa-pencil"></i>
+          </button>
+        </div>
+        <div class="col-2">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="Delete"
+          >
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
+        <div class="col-2">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="Column Filter"
+          >
+            <i class="fa fa-filter"></i>
+          </button>
+        </div>
+        <div class="col-2">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="Export as CSV"
+          >
+            <i class="fa fa-download"></i>
+          </button>
+        </div>
+        <div class="col-2">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="Resize All Columns"
+          >
+            <i class="fa fa-arrows-h"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-8 col-sm-12 text-right">
+      PAGE: <input type="number" style="width: 50px" [(ngModel)]="paginationPages.current" /> / {{paginationPages.total}}
+      <button
+        class="btn"
+        data-toggle="tooltip"
+        data-placement="left"
+        title="Previous Page"
+      >
+        <i class="fa fa-angle-left"></i>
+      </button>
+      {{ pagination.begin }}-{{ pagination.end }} of
+      {{ pagination.total }}
+      <button
+        class="btn"
+        data-toggle="tooltip"
+        data-placement="left"
+        title="Next Page"
+      >
+        <i class="fa fa-angle-right"></i>
+      </button>
+    </div>
+  </div>
+  <br />
+  <app-grid
+    [columnName]="columnDefs"
+    [hasRowAnimation]="true"
+    (gridReady)="OnGridReady($event)"
+    [rowData]="rowData"
+  >
+  </app-grid>
+</div>

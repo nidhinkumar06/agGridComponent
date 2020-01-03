@@ -15,7 +15,10 @@ import { environment } from 'src/environments/environment';
 import { FormsModule } from '@angular/forms';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { VehiclesComponent } from './vehicles/vehicles.component';
-
+import { gridReducer } from './redux/reducers/gridWidthReducer';
+import { SwitchesComponent } from './switches/switches.component';
+import { MultiSelectDropDownModule } from './multi-select-drop-down';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -23,7 +26,8 @@ import { VehiclesComponent } from './vehicles/vehicles.component';
     GridComponent,
     UserComponent,
     CarComponent,
-    VehiclesComponent
+    VehiclesComponent,
+    SwitchesComponent
   ],
   imports: [
     BrowserModule,
@@ -32,10 +36,13 @@ import { VehiclesComponent } from './vehicles/vehicles.component';
     HttpClientModule,
     FormsModule,
     StoreModule.forRoot({
-      auditList: listReducer
+      auditList: listReducer,
+      gridList: gridReducer
     }),
+    MultiSelectDropDownModule,
     NgMultiSelectDropDownModule.forRoot(),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]

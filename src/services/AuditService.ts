@@ -34,7 +34,11 @@ export class AuditService {
     return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}&%24term=${searchKey}`);
   }
 
+  // getColumnSearch(searchKey: string) {
+  //   return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}&action=${searchKey}`);
+  // }
+
   getColumnSearch(searchKey: string) {
-    return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}&action=${searchKey}`);
+    return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}&${searchKey}`);
   }
 }

@@ -9,7 +9,9 @@
   [floatingFilter]="hasFloatingFilter"
   [defaultColDef]="defaultColDef"
   [enableColResize]="true"
+  [rowModelType]="rowModelType"
   (selectionChanged)="onSelectionChanged()"
+  (columnResized)="onColumnResized()"
   (gridReady)="onGridReady($event)"
 >
 </ag-grid-angular>
