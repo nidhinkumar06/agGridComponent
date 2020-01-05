@@ -1,3 +1,4 @@
+import { FloatingFilterComponent } from './floating-filter/floatingfilter';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -7,18 +8,20 @@ import { GridComponent } from './grid/grid.component';
 import { UserComponent } from './user/user.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CarComponent } from './car/car.component';
-import { listReducer } from './redux/reducers/auditListReducer';
 import { HttpClientModule } from '@angular/common/http';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule  } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { FormsModule } from '@angular/forms';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { VehiclesComponent } from './vehicles/vehicles.component';
-import { gridReducer } from './redux/reducers/gridWidthReducer';
 import { SwitchesComponent } from './switches/switches.component';
 import { MultiSelectDropDownModule } from './multi-select-drop-down';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+
+import * as fromFeature from '../app/redux/store/store';
+
+
 
 @NgModule({
   declarations: [
@@ -27,18 +30,22 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     UserComponent,
     CarComponent,
     VehiclesComponent,
-    SwitchesComponent
+    SwitchesComponent,
+    FloatingFilterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    AgGridModule.withComponents([]),
+    AgGridModule.withComponents([FloatingFilterComponent]),
     HttpClientModule,
     FormsModule,
-    StoreModule.forRoot({
-      auditList: listReducer,
-      gridList: gridReducer
-    }),
+    StoreModule.forRoot(
+      fromFeature.reducers,
+      {metaReducers: fromFeature.metaReducers}
+    ),
+    // StoreModule.forFeature(fromFeature.FEATURE_NAME, fromFeature.reducers, {
+    //   metaReducers: fromFeature.metaReducers
+    // }),
     MultiSelectDropDownModule,
     NgMultiSelectDropDownModule.forRoot(),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),

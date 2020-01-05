@@ -8,6 +8,8 @@
           placeholder="Global Search"
           aria-label="Recipient's username"
           aria-describedby="button-addon2"
+          [(ngModel)]="globalSearch"
+          (ngModelChange)="this.search.next($event)"
         />
       </div>
     </div>
@@ -71,35 +73,63 @@
       </div>
     </div>
   </div>
-  <div class="row">
+
+  <div class="row" *ngIf="this.rowData">
+    <div class="col-lg-4 col-sm-12">
+      <multiselect-dropdown
+        [placeholder]="'Deselect a Column'"
+        [data]="dropDownList"
+        [(ngModel)]="selectedItems"
+        [settings]="dropdownSettings"
+        (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)"
+        (onDeSelect)="onItemUnSelect($event)"
+        (cdkDropListDropped)="drop($event)"
+      >
+      </multiselect-dropdown>
+    </div>
     <div class="col-lg-8 col-sm-12 text-right">
-      PAGE: <input type="number" style="width: 50px" [(ngModel)]="paginationPages.current" /> / {{paginationPages.total}}
+      PAGE:
+      <input
+        type="number"
+        style="width: 50px"
+        [(ngModel)]="pagination.current"
+        (ngModelChange)="this.currentPageText.next($event)"
+      />
+      / {{ pagination.total }}
       <button
-        class="btn"
+        class="btn btn-primary"
         data-toggle="tooltip"
         data-placement="left"
         title="Previous Page"
+        (click)="previousPage()"
       >
         <i class="fa fa-angle-left"></i>
       </button>
-      {{ pagination.begin }}-{{ pagination.end }} of
-      {{ pagination.total }}
+      {{ pages.begin }}-{{ pages.end }} of
+      {{ pages.total }}
       <button
-        class="btn"
+        class="btn btn-primary"
         data-toggle="tooltip"
         data-placement="left"
         title="Next Page"
+        (click)="nextPage()"
       >
         <i class="fa fa-angle-right"></i>
       </button>
     </div>
   </div>
   <br />
+
   <app-grid
     [columnName]="columnDefs"
+    [components]="components"
     [hasRowAnimation]="true"
+    [rowModelType]="this.rowModelType"
+    [rowData]="this.rowData"
+    [hasFloatingFilter]="this.floatingFilter"
+    [frameworkComponents]="frameworkComponents"
     (gridReady)="OnGridReady($event)"
-    [rowData]="rowData"
   >
   </app-grid>
 </div>

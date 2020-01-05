@@ -1,13 +1,12 @@
 import { AuditService } from '../../services/AuditService';
 import { Component, OnInit } from '@angular/core';
 
-import { first, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
 import * as ListStoreActions from '../redux/actions/auditListActions';
 import * as GridStoreActions from '../redux/actions/gridWidthActions';
 import { PagerService } from '../../services/PagerService';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-car',
@@ -60,15 +59,15 @@ export class CarComponent implements OnInit {
 
   columns;
   params;
+  components;
 
 
   constructor(
     private auditService: AuditService,
     private pagerService: PagerService,
-    private store: Store<any>,
-    private http: HttpClient) {
-    console.log('car component got called');
+    private store: Store<any>) {
     store.pipe(select('auditList')).subscribe(val => {
+      console.log('val is', val);
       this.page = val.page;
     });
     store.pipe(select('gridList')).subscribe(val => {
@@ -91,6 +90,8 @@ export class CarComponent implements OnInit {
           return params.columnApi.getRowGroupColumns().length === 0;
         },
         suppressSizeToFit: true,
+        filter: false,
+        cellRenderer: 'loadingCellRenderer',
       },
       {
         headerName: 'Action',
@@ -100,6 +101,7 @@ export class CarComponent implements OnInit {
           suppressAndOrCondition: true,
         },
         suppressMenu: true,
+        sortable: true,
         floatingFilterComponentParams: { suppressFilterButton: true }
       },
       {
@@ -115,6 +117,18 @@ export class CarComponent implements OnInit {
       { headerName: 'Status Code', field: 'statusCode' },
     ];
     this.columnDefs = this.columnDefs.map((item, i) => Object.assign({}, item, this.columns[i]));
+
+    this.components = {
+      loadingCellRenderer: function(params) {
+        // console.log('params is', params);
+
+        if (params.value !== undefined) {
+          return params.value;
+        } else {
+          return '<img src="https://raw.githubusercontent.com/ag-grid/ag-grid/master/packages/ag-grid-docs/src/images/loading.gif">';
+        }
+      }
+    };
   }
 
   OnGridReady(params) {
@@ -133,8 +147,6 @@ export class CarComponent implements OnInit {
       const dataSource = {
         rowCount: null,
         getRows: (params) => {
-          console.log('params is', params);
-
           setTimeout(() => {
             let dataAfterSortingAndFiltering;
             this.sortAndFilter(audits.docs, params.sortModel, params.filterModel).then((datas: any) => {
@@ -199,7 +211,6 @@ export class CarComponent implements OnInit {
 
     await this.auditService.getColumnSearch(params).pipe(first()).toPromise()
     .then((datas: any) => {
-      console.log('data is', datas);
       this.pagination = datas.items;
       this.paginationPages = datas.pages;
       resultOfFilter.push(...datas.docs);
@@ -302,6 +313,7 @@ export class CarComponent implements OnInit {
   }
 
   previous(): void {
+    console.log('previous page got called');
     if (this.paginationPages.hasPrev) {
       this.store.dispatch(new ListStoreActions.NextPage(this.page - 1));
       this.loadFilteredData(this.params);
@@ -311,6 +323,7 @@ export class CarComponent implements OnInit {
 
   next(): void {
     if (this.paginationPages.hasNext) {
+      console.log('this.page in next page', this.page);
       this.store.dispatch(new ListStoreActions.NextPage(this.page + 1));
       this.loadFilteredData(this.params);
       // this.loadData();

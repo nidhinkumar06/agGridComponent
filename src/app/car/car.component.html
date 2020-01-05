@@ -1,167 +1,168 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-lg-9 col-sm-12">
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Global Search"
-          aria-label="Recipient's username"
-          aria-describedby="button-addon2"
-          [(ngModel)]="globalSearch"
-          (ngModelChange)="searchGlobalData()"
-        />
-      </div>
-    </div>
-    <div class="col-lg-3 col-sm-12 text-right">
-        <div class="row">
-          <div class="col-2" *ngIf="showEdit">
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-toggle="tooltip"
-              data-placement="left"
-              title="Edit"
-            >
-              <i class="fa fa-pencil"></i>
-            </button>
-          </div>
-          <div class="col-2" *ngIf="showDelete">
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-toggle="tooltip"
-              data-placement="left"
-              title="Delete"
-            >
-              <i class="fa fa-trash"></i>
-            </button>
-          </div>
-          <div class="col-2">
-            <button
-              type="button"
-              class="btn btn-primary"
-              (click)="toggleFloatingFilter()"
-              data-toggle="tooltip"
-              data-placement="left"
-              title="Column Filter"
-            >
-              <i class="fa fa-filter"></i>
-            </button>
-          </div>
-          <div class="col-2">
-            <button
-              type="button"
-              class="btn btn-primary"
-              (click)="exportCSV()"
-              data-toggle="tooltip"
-              data-placement="left"
-              title="Export as CSV"
-            >
-              <i class="fa fa-download"></i>
-            </button>
-          </div>
-          <div class="col-2">
-            <button
-              type="button"
-              class="btn btn-primary"
-              (click)="autoSizeAll()"
-              data-toggle="tooltip"
-              data-placement="left"
-              title="Resize All Columns"
-            >
-              <i class="fa fa-arrows-h"></i>
-            </button>
-          </div>
+    <div class="row">
+      <div class="col-lg-9 col-sm-12">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Global Search"
+            aria-label="Recipient's username"
+            aria-describedby="button-addon2"
+            [(ngModel)]="globalSearch"
+            (ngModelChange)="searchGlobalData()"
+          />
         </div>
       </div>
-  </div>
-  <div class="row" *ngIf="this.rowData">
-    <div class="col-lg-4 col-sm-12">
-      <!-- <ng-multiselect-dropdown
-        [placeholder]="'Deselect a Column'"
-        [data]="dropDownList"
-        [(ngModel)]="selectedItems"
-        [settings]="dropdownSettings"
-        (onSelect)="onItemSelect($event)"
-        (onSelectAll)="onSelectAll($event)"
-        (onDeSelect)="onItemUnSelect($event)"
-      >
-      </ng-multiselect-dropdown> -->
-      <multiselect-dropdown
-        [placeholder]="'Deselect a Column'"
-        [data]="dropDownList"
-        [(ngModel)]="selectedItems"
-        [settings]="dropdownSettings"
-        (onSelect)="onItemSelect($event)"
-        (onSelectAll)="onSelectAll($event)"
-        (onDeSelect)="onItemUnSelect($event)"
-        (cdkDropListDropped)="drop($event)"
-      >
-      </multiselect-dropdown>
-    </div>
-    <div class="col-lg-8 col-sm-12 text-right">
-        PAGE: <input type="number" style="width: 50px" [(ngModel)]="paginationPages.current" /> / {{paginationPages.total}}
-        <button
-          class="btn"
-          (click)="previous()"
-          data-toggle="tooltip"
-          data-placement="left"
-          title="Previous Page"
-        >
-          <i class="fa fa-angle-left"></i>
-        </button>
-        {{ pagination.begin }}-{{ pagination.end }} of
-        {{ pagination.total }}
-        <button
-          class="btn"
-          (click)="next()"
-          data-toggle="tooltip"
-          data-placement="left"
-          title="Next Page"
-        >
-          <i class="fa fa-angle-right"></i>
-        </button>
-      <!-- <div>
-        <div>
-          <nav aria-label="Page navigation example">
-            <ul
-              *ngIf="pager.pages && pager.pages.length"
-              class="pagination justify-content-end"
-            >
-              <li class="page-item" [ngClass]="{ disabled: pager.currentPage === 1 }">
-                <a class="page-link" (click)="setPage(1)">First</a>
-              </li>
-              <li class="page-item" [ngClass]="{ disabled: pager.currentPage === 1 }">
-                 <a class="page-link" (click)="setPage(pager.currentPage -1)">Previous</a>
-              </li>
-              <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{ active: pager.currentPage === page }">
-                <a class="page-link" (click)="setPage(page)">{{ page }}</a>
-              </li>
-              <li class="page-item" [ngClass]="{ disabled: pager.currentPage === pager.totalPages }">
-                <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
-              </li>
-              <li class="page-item" [ngClass]="{ disabled: pager.currentPage === pager.totalPages }">
-                  <a class="page-link" (click)="setPage(pager.totalPages)">Last</a>
-              </li>
-            </ul>
-          </nav>
+      <div class="col-lg-3 col-sm-12 text-right">
+          <div class="row">
+            <div class="col-2" *ngIf="showEdit">
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-toggle="tooltip"
+                data-placement="left"
+                title="Edit"
+              >
+                <i class="fa fa-pencil"></i>
+              </button>
+            </div>
+            <div class="col-2" *ngIf="showDelete">
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-toggle="tooltip"
+                data-placement="left"
+                title="Delete"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+            <div class="col-2">
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="toggleFloatingFilter()"
+                data-toggle="tooltip"
+                data-placement="left"
+                title="Column Filter"
+              >
+                <i class="fa fa-filter"></i>
+              </button>
+            </div>
+            <div class="col-2">
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="exportCSV()"
+                data-toggle="tooltip"
+                data-placement="left"
+                title="Export as CSV"
+              >
+                <i class="fa fa-download"></i>
+              </button>
+            </div>
+            <div class="col-2">
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="autoSizeAll()"
+                data-toggle="tooltip"
+                data-placement="left"
+                title="Resize All Columns"
+              >
+                <i class="fa fa-arrows-h"></i>
+              </button>
+            </div>
+          </div>
         </div>
-      </div> -->
     </div>
+    <div class="row" *ngIf="this.rowData">
+      <div class="col-lg-4 col-sm-12">
+        <!-- <ng-multiselect-dropdown
+          [placeholder]="'Deselect a Column'"
+          [data]="dropDownList"
+          [(ngModel)]="selectedItems"
+          [settings]="dropdownSettings"
+          (onSelect)="onItemSelect($event)"
+          (onSelectAll)="onSelectAll($event)"
+          (onDeSelect)="onItemUnSelect($event)"
+        >
+        </ng-multiselect-dropdown> -->
+        <multiselect-dropdown
+          [placeholder]="'Deselect a Column'"
+          [data]="dropDownList"
+          [(ngModel)]="selectedItems"
+          [settings]="dropdownSettings"
+          (onSelect)="onItemSelect($event)"
+          (onSelectAll)="onSelectAll($event)"
+          (onDeSelect)="onItemUnSelect($event)"
+          (cdkDropListDropped)="drop($event)"
+        >
+        </multiselect-dropdown>
+      </div>
+      <div class="col-lg-8 col-sm-12 text-right">
+          PAGE: <input type="number" style="width: 50px" [(ngModel)]="paginationPages.current" /> / {{paginationPages.total}}
+          <button
+            class="btn"
+            (click)="previous()"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="Previous Page"
+          >
+            <i class="fa fa-angle-left"></i>
+          </button>
+          {{ pagination.begin }}-{{ pagination.end }} of
+          {{ pagination.total }}
+          <button
+            class="btn"
+            (click)="next()"
+            data-toggle="tooltip"
+            data-placement="left"
+            title="Next Page"
+          >
+            <i class="fa fa-angle-right"></i>
+          </button>
+        <!-- <div>
+          <div>
+            <nav aria-label="Page navigation example">
+              <ul
+                *ngIf="pager.pages && pager.pages.length"
+                class="pagination justify-content-end"
+              >
+                <li class="page-item" [ngClass]="{ disabled: pager.currentPage === 1 }">
+                  <a class="page-link" (click)="setPage(1)">First</a>
+                </li>
+                <li class="page-item" [ngClass]="{ disabled: pager.currentPage === 1 }">
+                   <a class="page-link" (click)="setPage(pager.currentPage -1)">Previous</a>
+                </li>
+                <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{ active: pager.currentPage === page }">
+                  <a class="page-link" (click)="setPage(page)">{{ page }}</a>
+                </li>
+                <li class="page-item" [ngClass]="{ disabled: pager.currentPage === pager.totalPages }">
+                  <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+                </li>
+                <li class="page-item" [ngClass]="{ disabled: pager.currentPage === pager.totalPages }">
+                    <a class="page-link" (click)="setPage(pager.totalPages)">Last</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <br />
+    <app-grid
+      [columnName]="columnDefs"
+      [components]="components"
+      [hasFloatingFilter]="this.floatingFilter"
+      [hasRowAnimation]="true"
+      [defaultColDef]="defaultColDefs"
+      [hasMultipleRows]="rowSelection"
+      [rowModelType]="this.rowModelType"
+      (gridReady)="OnGridReady($event)"
+      (selectionChanged)="onSelectionChanged($event)"
+      (columnResized)="onColumnResized($event)"
+      [rowData]="rowData"
+    >
+    </app-grid>
   </div>
-  <br />
-  <app-grid
-    [columnName]="columnDefs"
-    [hasFloatingFilter]="this.floatingFilter"
-    [hasRowAnimation]="true"
-    [defaultColDef]="defaultColDefs"
-    [hasMultipleRows]="rowSelection"
-    [rowModelType]="this.rowModelType"
-    (gridReady)="OnGridReady($event)"
-    (selectionChanged)="onSelectionChanged($event)"
-    (columnResized)="onColumnResized($event)"
-    [rowData]="rowData"
-  >
-  </app-grid>
-</div>

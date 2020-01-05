@@ -20,6 +20,8 @@ export class GridComponent implements OnInit {
   @Input() hasFloatingFilter: boolean;
   @Input() hasServerSideFilter: boolean;
   @Input() rowModelType: string;
+  @Input() components: string;
+  @Input() frameworkComponents: any;
   @Output() selectionChanged = new EventEmitter();
   @Output() columnResized = new EventEmitter();
   @Output() gridReady = new EventEmitter();

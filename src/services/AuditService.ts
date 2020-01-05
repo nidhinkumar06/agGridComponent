@@ -20,7 +20,7 @@ export class AuditService {
   }
 
   getAllAuditLogs() {
-    console.log('this.pages is', this.page);
+    console.log('this.pages in audit service', this.page);
     console.log('this.action', this.action);
     return this.http.get<any[]>(`${environment.baseUrl}/auditLog?%24page=${this.page}&%24limit=${this.pageLimit}`);
     // if (this.action) {
